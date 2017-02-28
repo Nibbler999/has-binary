@@ -27,28 +27,30 @@ function hasBinary(obj) {
   }
 
   if (isArray(obj)) {
-    for (var i = 0; i < obj.length; i++) {
+    for (var i = 0, l = obj.length; i < l; i++) {
        if (hasBinary(obj[i])) {
          return true;
        }
     }
-  } else if ( (global.Buffer && global.Buffer.isBuffer && global.Buffer.isBuffer(obj)) ||
+    return false;
+  }
+
+  if ( (global.Buffer && global.Buffer.isBuffer && global.Buffer.isBuffer(obj)) ||
      (global.ArrayBuffer && obj instanceof ArrayBuffer) ||
      (global.Blob && obj instanceof Blob) ||
      (global.File && obj instanceof File)
     ) {
     return true;
-  } else {
+  }
 
-    // see: https://github.com/Automattic/has-binary/pull/4
-    if (obj.toJSON && 'function' == typeof obj.toJSON) {
-      obj = obj.toJSON();
-    }
+  // see: https://github.com/Automattic/has-binary/pull/4
+  if (obj.toJSON && 'function' == typeof obj.toJSON) {
+    obj = obj.toJSON();
+  }
 
-    for (var key in obj) {
-      if (Object.prototype.hasOwnProperty.call(obj, key) && hasBinary(obj[key])) {
-        return true;
-      }
+  for (var key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key) && hasBinary(obj[key])) {
+      return true;
     }
   }
 
